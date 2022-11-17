@@ -33,7 +33,7 @@ Why should we care about your product?
 Domain Modeling
 ---------------
 
-![UML version 1.0.0](./public/UML-wen.png)
+![UML version 1.0.0](./assets/UML-wen.png)
 
 # Database Schema Diagram
 
