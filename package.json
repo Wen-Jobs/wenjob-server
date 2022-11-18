@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "lint": "eslint **/*.js",
+    "test": "jest --verbose --coverage",
+    "test-watch": "jest --watchAll --verbose --coverage",
+    "db:config": "sequelize init:config",
+    "db:create": "sequelize db:create"
   },
   "repository": {
     "type": "git",
@@ -16,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/Wen-Jobs/wenjob-server/issues"
   },
-  "homepage": "https://github.com/Wen-Jobs/wenjob-server#readme"
+  "homepage": "https://github.com/Wen-Jobs/wenjob-server#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
 }
