@@ -32,7 +32,11 @@ async function getJobs() {
 
     // grab time stamps for job postings
     let latest_post = el.map(time => time.children[2].querySelector('span').innerText);
-    return { jobs, companies, location, latest_post}
+
+    // grab URL for each job posting
+    let job_URL = el.map(href => href.children[1].children[0].href);
+
+    return { jobs, companies, location, latest_post, job_URL}
 });
 // console.log(table_row);
 //   const jobs = await page.$$eval('h2', e => {
@@ -47,17 +51,23 @@ async function getJobs() {
   // console.log('Jobs:', jobs);
   // // get all company names on page (returns array of element inner text)
 //   const companies = await page.$$eval('h3', e => e.map(el => el.innerHTML));
-  // // confirm length of companies array returned from page.$$eval
+// // confirm length of companies array returned from page.$$eval
   // let companyLength = companies.length;
   // console.log('Companies length: ', companyLength);
   // console.log('Companies:', companies);
   // zip the jobs and companies together into an array of objects
+
+
   let jobCoPairs = table_row.jobs.map((job, i) => {
+      let linkArr = table_row.job_URL[i].split('/');
+      let key = linkArr[linkArr.length - 1];
     return {
       job: job,
       company: table_row.companies[i],
       location: table_row.location[i],
-      post_date: table_row.latest_post[i]
+      post_date: table_row.latest_post[i],
+      link: table_row.job_URL[i],
+      key,
     };
   });
 
