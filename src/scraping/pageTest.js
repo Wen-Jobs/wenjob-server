@@ -1,4 +1,3 @@
-const e = require('express');
 const puppeteer = require('puppeteer');
 
 
@@ -12,32 +11,49 @@ async function getJobs() {
   const page = await browser.newPage();
   // Go to URL
   console.log('Hitting URL...');
-  // Get all job titles on page (returns array of element inner text)
-  console.log('Scraping...');
-  // Estimate how many pages to scrape
   const url = 'https://web3.career/?page=1';
   await page.goto(url);
-  let pageNumSrcElement = await page.$eval('#hh', el => el.innerHTML);
-  let srcArr = pageNumSrcElement.split(' ');
-  let numPages = Math.ceil(+srcArr[1].replace(',', '') / 35);
-  console.log(numPages);
+  console.log('Scraping...');
 
-  for(let i = 1; i <= 2; i++) {
-    const url = `https://web3.career/?page=${i}`;
-    await page.goto(url);
-    const jobs = await page.$$eval('h2', e => e.map(el => el.innerHTML));
-    jobs.pop();
-    const companies = await page.$$eval('h3', e => e.map(el => el.innerHTML));
-    let jobCoPairs = jobs.map((job, i) => {
-      return {
-        job: job,
-        company: companies[i],
-      };
+  let details = [];
+  let detailSelector = '#job > div > div > div.text-dark-grey-text.px-3.pt-2';
+
+  for (let j = 1; j <= 103; j += 3) {
+    const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
+    await page.$eval(jobBlockSelector, elem => elem.click());
+    await page.waitForTimeout(100);
+    let detail = await page.$eval(detailSelector, (el, i) => {
+      console.log('elem ___________--------------', i, el.innerText);
+      return el.innerText;
     });
-    allJobs = [...allJobs, ...jobCoPairs];
+    details.push(detail);
   }
-  console.log('All Jobs: ', allJobs);
-  console.log('All Jobs Length: ', allJobs.length);
+
+  console.log('details:', details);
+  console.log('details length:', details.length);
+
+  // Estimate how many pages to scrape
+
+  // let pageNumSrcElement = await page.$eval('#hh', el => el.innerHTML);
+  // let srcArr = pageNumSrcElement.split(' ');
+  // let numPages = Math.ceil(+srcArr[1].replace(',', '') / 35);
+
+  // for(let i = 1; i <= 2; i++) {
+  //   const url = `https://web3.career/?page=${i}`;
+  //   await page.goto(url);
+  //   const jobs = await page.$$eval('h2', e => e.map(el => el.innerHTML));
+  //   jobs.pop();
+  //   const companies = await page.$$eval('h3', e => e.map(el => el.innerHTML));
+  //   let jobCoPairs = jobs.map((job, i) => {
+  //     return {
+  //       job: job,
+  //       company: companies[i],
+  //     };
+  //   });
+  //   allJobs = [...allJobs, ...jobCoPairs];
+  // }
+  // console.log('All Jobs: ', allJobs);
+  // console.log('All Jobs Length: ', allJobs.length);
   // first job posting fully displayed has the same element, so you must pop from the array to avoid this duplicate
   // // confirm length of jobs array returned from page.$$eval
   // let listLength = jobs.length;
@@ -55,9 +71,3 @@ async function getJobs() {
 
 getJobs();
 
-// Time since posted selector
-// body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(28) > td:nth-child(3) > span
-
-
-// Estimated salary selector
-// body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(4) > td:nth-child(5) > p

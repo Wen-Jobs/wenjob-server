@@ -18,11 +18,14 @@ async function getJobs() {
   const url = 'https://web3.career/?page=1';
   await page.goto(url);
 
+  // get the total number of pages to be scraped
   let pageNumSrcElement = await page.$eval('#hh', el => el.innerHTML);
   let srcArr = pageNumSrcElement.split(' ');
   let numPages = Math.ceil(+srcArr[1].replace(',', '') / 35);
 
-  for (let i = 1; i <= 25; i++) {
+
+  // iterate over each page (swap "i <= 1" with "i <= numPages" for full scrape)
+  for (let i = 1; i <= 1; i++) {
     const url = `https://web3.career/?page=${i}`;
     console.log('Hitting URL...', `Page ${i}`);
     await page.goto(url);
@@ -41,13 +44,31 @@ async function getJobs() {
       // grab time stamps for job postings
       let post_date = el.map(time => time.children[2].querySelector('span').innerText);
 
+      // grab URL for job posting
       let job_URL = el.map(href => href.children[1].children[0].href);
 
+      // grab salary range for job
       let salary = el.map(elem => elem.children[4].children[0].innerText);
 
       return { jobs, companies, location, post_date, job_URL, salary };
     });
 
+    let details = [];
+    let detailSelector = '#job > div > div > div.text-dark-grey-text.px-3.pt-2';
+
+    // click on each job posting and grab the description
+    for (let j = 1; j <= 103; j += 3) {
+      const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
+      await page.$eval(jobBlockSelector, elem => elem.click());
+      await page.waitForTimeout(100);
+      let detail = await page.$eval(detailSelector, (el, i) => {
+        console.log('elem ___________--------------', i, el.innerText);
+        return el.innerText;
+      });
+      details.push(detail);
+    }
+
+    // zip all job data points together and create an array of objects
     let jobCoPairs = table_row.jobs.map((job, i) => {
 
       let linkArr = table_row.job_URL[i].split('/');
@@ -61,6 +82,7 @@ async function getJobs() {
         job_URL: table_row.job_URL[i],
         key,
         salary: table_row.salary[i],
+        details: details[i],
       };
     });
 
@@ -68,25 +90,6 @@ async function getJobs() {
   }
 
   console.log('All Jobs: ', allJobs);
-
-  // console.log(table_row);
-  //   const jobs = await page.$$eval('h2', e => {
-  //     console.log(e);
-  //     return e.map(el => el.innerHTML)
-  //   });
-  // first job posting fully displayed has the same element, so you must pop from the array to avoid this duplicate
-  //   jobs.pop();
-  // // confirm length of jobs array returned from page.$$eval
-  // let listLength = jobs.length;
-  // console.log('Jobs length: ', listLength);
-  // console.log('Jobs:', jobs);
-  // // get all company names on page (returns array of element inner text)
-  //   const companies = await page.$$eval('h3', e => e.map(el => el.innerHTML));
-  // // confirm length of companies array returned from page.$$eval
-  // let companyLength = companies.length;
-  // console.log('Companies length: ', companyLength);
-  // console.log('Companies:', companies);
-  // zip the jobs and companies together into an array of objects
 
   // close browser instance
   await browser.close();
