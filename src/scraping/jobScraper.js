@@ -26,7 +26,7 @@ async function getJobs() {
 
 
   // iterate over each page (swap "i <= 1" with "i <= numPages" for full scrape)
-  for (let i = 1; i <= 1; i++) {
+  for (let i = 1; i <= 2; i++) {
     const url = `https://web3.career/?page=${i}`;
     console.log('Hitting URL...', `Page ${i}`);
     await page.goto(url);
