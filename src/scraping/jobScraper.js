@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 async function getJobs() {
+  const all_Jobs = { jobs: [] };
   // Launch browser instance
   console.log('Opening browser...');
   const browser = await puppeteer.launch();
@@ -42,7 +43,7 @@ async function getJobs() {
       let location = el.map(a => a.children[3].children[0].innerText);
 
       // grab time stamps for job postings
-      let post_date = el.map(time => time.children[2].querySelector('span').innerText);
+      let latest_post = el.map(time => time.children[2].querySelector('span').innerText);
 
       // grab URL for job posting
       let job_URL = el.map(href => href.children[1].children[0].href);
@@ -50,7 +51,7 @@ async function getJobs() {
       // grab salary range for job
       let salary = el.map(elem => elem.children[4].children[0].innerText);
 
-      return { jobs, companies, location, post_date, job_URL, salary };
+      return { jobs, companies, location, latest_post, job_URL, salary };
     });
 
     let details = [];
@@ -59,44 +60,52 @@ async function getJobs() {
     // click on each job posting and grab the description
     for (let j = 1; j <= 103; j += 3) {
       const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
+      const jobsListingURLSelector = `#job > div > div > div.text-start.w-100.d-flex.align-items-center.d-md-none > a`;
       await page.$eval(jobBlockSelector, elem => elem.click());
-      await page.waitForTimeout(100);
+      await page.waitForTimeout(500);
+
       let detail = await page.$eval(detailSelector, (el, i) => {
         console.log('elem ___________--------------', i, el.innerText);
+
+        console.log(el.innerText);
+
+
         return el.innerText;
       });
+
       details.push(detail);
-    }
+    };
 
     const throwErr = (err) => {
-        if(err) throw err;
-        console.log('saved!');
+      if (err) throw err;
     }
 
-        // zip all job data points together and create an array of objects
+    // zip all job data points together and create an array of objects
     let jobCoPairs = table_row.jobs.map((job, i) => {
-        let linkArr = table_row.job_URL[i].split('/');
-        let key = linkArr[linkArr.length - 1];
+      let linkArr = table_row.job_URL[i].split('/');
+      let key = linkArr[linkArr.length - 1];
 
-        const job_listing = {
-            job: job,
-            company: table_row.companies[i],
-            location: table_row.location[i],
-            post_date: table_row.latest_post[i],
-            link: table_row.job_URL[i],
-            key,
-            details: details[i],
-        };
-        
-        //method appends specified content to a file. If the file does not exist, the file will be created
-        fs.appendFile('wenjobs_test.json', JSON.stringify(job_listing), throwErr) 
-        return job_listing;
-     });
-        // console.log('Job/Company Pairs: ', jobCoPairs);
-    }
-    
-    // close browser instance
-    await browser.close();
+      const job_listing = {
+        job: job,
+        company: table_row.companies[i],
+        location: table_row.location[i],
+        post_date: table_row.latest_post[i],
+        link: table_row.job_URL[i],
+        key,
+        details: details[i],
+      };
+      all_Jobs.jobs.push(job_listing);
+      return job_listing;
+    });
+
+    //method appends specified content to a file. If the file does not exist, the file will be created
+    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr)
+
+    // console.log('Job/Company Pairs: ', jobCoPairs);
+  }
+
+  // close browser instance
+  await browser.close();
 }
 
 getJobs();
