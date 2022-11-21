@@ -26,12 +26,19 @@ async function getJobs() {
 
 
   // iterate over each page (swap "i <= 1" with "i <= numPages" for full scrape)
-  for (let i = 1; i <= 2; i++) {
+  for (let i = 1; i <= 1; i++) {
     const url = `https://web3.career/?page=${i}`;
     console.log('Hitting URL...', `Page ${i}`);
     await page.goto(url);
     const table_row = await page.$$eval('.table_row', el => {
-      console.log(el);
+
+      //Grab job tags
+      let tags = [];
+      el.map(tag => {
+        let elem_tag = tag.children[5].innerText;
+        elem_tag = elem_tag.replace('non tech', 'non-tech');
+        tags.push(elem_tag.split(' '));
+      });
 
       // grab job title
       let jobs = el.map(time => time.children[0].innerText);
@@ -51,7 +58,7 @@ async function getJobs() {
       // grab salary range for job
       let salary = el.map(elem => elem.children[4].children[0].innerText);
 
-      return { jobs, companies, location, latest_post, job_URL, salary };
+      return { jobs, companies, location, latest_post, job_URL, salary, tags };
     });
 
     let details = [];
@@ -65,20 +72,20 @@ async function getJobs() {
       await page.waitForTimeout(500);
 
       let detail = await page.$eval(detailSelector, (el, i) => {
-        console.log('elem ___________--------------', i, el.innerText);
+        // console.log('elem ___________--------------', i, el.innerText);
 
-        console.log(el.innerText);
+        // console.log(el.innerText);
 
 
         return el.innerText;
       });
 
       details.push(detail);
-    };
+    }
 
     const throwErr = (err) => {
       if (err) throw err;
-    }
+    };
 
     // zip all job data points together and create an array of objects
     let jobCoPairs = table_row.jobs.map((job, i) => {
@@ -93,15 +100,16 @@ async function getJobs() {
         link: table_row.job_URL[i],
         key,
         details: details[i],
+        tags: table_row.tags[i],
       };
       all_Jobs.jobs.push(job_listing);
       return job_listing;
     });
 
     //method appends specified content to a file. If the file does not exist, the file will be created
-    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr)
+    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr);
 
-    // console.log('Job/Company Pairs: ', jobCoPairs);
+    console.log('Job/Company Pairs: ', jobCoPairs);
   }
 
   // close browser instance
