@@ -2,13 +2,10 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 async function getJobs() {
+  const all_Jobs = { jobs: [] };
   // Launch browser instance
   console.log('Opening browser...');
-  const browser = await puppeteer.launch({
-    headless: false,
-    args: ["--disable-setuid-sandbox"],
-    'ignoreHTTPSErrors': true
-});
+  const browser = await puppeteer.launch();
 
   // Open new page or "tab" in browser
   console.log('Opening new page...');
@@ -61,7 +58,7 @@ async function getJobs() {
     let detailSelector = '#job > div > div > div.text-dark-grey-text.px-3.pt-2';
 
     // click on each job posting and grab the description
-    for (let j = 1; j <= 20; j += 3) {
+    for (let j = 1; j <= 103; j += 3) {
       const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
       const jobsListingURLSelector = `#job > div > div > div.text-start.w-100.d-flex.align-items-center.d-md-none > a`;
       await page.$eval(jobBlockSelector, elem => elem.click());
@@ -69,6 +66,10 @@ async function getJobs() {
 
       let detail = await page.$eval(detailSelector, (el, i) => {
         console.log('elem ___________--------------', i, el.innerText);
+
+        console.log(el.innerText);
+
+
         return el.innerText;
       });
 
@@ -77,7 +78,6 @@ async function getJobs() {
 
     const throwErr = (err) => {
       if (err) throw err;
-      // console.log('saved!');
     }
 
     // zip all job data points together and create an array of objects
@@ -94,16 +94,18 @@ async function getJobs() {
         key,
         details: details[i],
       };
-
-      //method appends specified content to a file. If the file does not exist, the file will be created
-      fs.appendFile('wenjobs_test.json', JSON.stringify(job_listing), throwErr)
+      all_Jobs.jobs.push(job_listing);
       return job_listing;
     });
+
+    //method appends specified content to a file. If the file does not exist, the file will be created
+    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr)
+
     // console.log('Job/Company Pairs: ', jobCoPairs);
   }
 
   // close browser instance
-  // await browser.close();
+  await browser.close();
 }
 
 getJobs();
