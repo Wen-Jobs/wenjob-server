@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 async function getJobs() {
-  let allJobs = [];
   // Launch browser instance
   console.log('Opening browser...');
   const browser = await puppeteer.launch();
@@ -68,32 +68,35 @@ async function getJobs() {
       details.push(detail);
     }
 
-    // zip all job data points together and create an array of objects
+    const throwErr = (err) => {
+        if(err) throw err;
+        console.log('saved!');
+    }
+
+        // zip all job data points together and create an array of objects
     let jobCoPairs = table_row.jobs.map((job, i) => {
+        let linkArr = table_row.job_URL[i].split('/');
+        let key = linkArr[linkArr.length - 1];
 
-      let linkArr = table_row.job_URL[i].split('/');
-      let key = linkArr[linkArr.length - 1];
-
-      return {
-        job: job,
-        company: table_row.companies[i],
-        location: table_row.location[i],
-        post_date: table_row.post_date[i],
-        job_URL: table_row.job_URL[i],
-        key,
-        salary: table_row.salary[i],
-        details: details[i],
-      };
-    });
-
-    allJobs = [...allJobs, ...jobCoPairs];
-  }
-
-  console.log('All Jobs: ', allJobs);
-
-  // close browser instance
-  await browser.close();
+        const job_listing = {
+            job: job,
+            company: table_row.companies[i],
+            location: table_row.location[i],
+            post_date: table_row.latest_post[i],
+            link: table_row.job_URL[i],
+            key,
+            details: details[i],
+        };
+        
+        //method appends specified content to a file. If the file does not exist, the file will be created
+        fs.appendFile('wenjobs_test.json', JSON.stringify(job_listing), throwErr) 
+        return job_listing;
+     });
+        // console.log('Job/Company Pairs: ', jobCoPairs);
+    }
+    
+    // close browser instance
+    await browser.close();
 }
 
 getJobs();
-
