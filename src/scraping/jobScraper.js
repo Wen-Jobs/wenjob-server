@@ -4,7 +4,11 @@ const fs = require('fs');
 async function getJobs() {
   // Launch browser instance
   console.log('Opening browser...');
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ["--disable-setuid-sandbox"],
+    'ignoreHTTPSErrors': true
+});
 
   // Open new page or "tab" in browser
   console.log('Opening new page...');
@@ -57,10 +61,11 @@ async function getJobs() {
     let detailSelector = '#job > div > div > div.text-dark-grey-text.px-3.pt-2';
 
     // click on each job posting and grab the description
-    for (let j = 1; j <= 103; j += 3) {
+    for (let j = 1; j <= 20; j += 3) {
       const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
+      const jobsListingURLSelector = `#job > div > div > div.text-start.w-100.d-flex.align-items-center.d-md-none > a`;
       await page.$eval(jobBlockSelector, elem => elem.click());
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
 
       let detail = await page.$eval(detailSelector, (el, i) => {
         console.log('elem ___________--------------', i, el.innerText);
@@ -72,7 +77,7 @@ async function getJobs() {
 
     const throwErr = (err) => {
       if (err) throw err;
-      console.log('saved!');
+      // console.log('saved!');
     }
 
     // zip all job data points together and create an array of objects
@@ -98,7 +103,7 @@ async function getJobs() {
   }
 
   // close browser instance
-  await browser.close();
+  // await browser.close();
 }
 
 getJobs();

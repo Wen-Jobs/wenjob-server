@@ -22,6 +22,27 @@ async function getJobs() {
     const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
     await page.$eval(jobBlockSelector, elem => elem.click());
     await page.waitForTimeout(100);
+
+      // let detailsURL = await page.$eval(jobsListingURLSelector, el => {
+      //   console.log(el);
+      //   el.click()
+      // });
+      // console.log(detailsURL);
+      // let popUp = await page.$eval(jobsListingURLSelector, elem =>{
+
+      //   alert(elem.getAttribute('click'));
+      //   // elem.click()
+
+      // });
+
+      // let bowserPages = await browser.pages();
+      // console.log('pages----------', page.browserContext().emitter.on)
+
+      // page.waitForTimeout(300);
+      // let url2 = page.url();
+      // // await page.close();
+      // console.log('url-------',url2);
+
     let detail = await page.$eval(detailSelector, (el, i) => {
       console.log('elem ___________--------------', i, el.innerText);
       return el.innerText;
