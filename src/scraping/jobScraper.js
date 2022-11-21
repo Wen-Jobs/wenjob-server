@@ -1,96 +1,114 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+
 
 async function getJobs() {
-  let allJobs = [];
-  // Launch browser instance
-  console.log('Opening browser...');
-  const browser = await puppeteer.launch();
+    // Launch browser instance
+    console.log('Opening browser...');
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: ["--disable-setuid-sandbox"],
+        'ignoreHTTPSErrors': true
+    });
 
-  // Open new page or "tab" in browser
-  console.log('Opening new page...');
-  const page = await browser.newPage();
-  // Go to URL
-  console.log('Hitting URL...');
-  // Get all job titles on page (returns array of element inner text)
-  console.log('Scraping...');
+    // Open new page or "tab" in browser
+    console.log('Opening new page...');
+    const page = await browser.newPage();
 
+    // Go to URL
+    console.log('Hitting URL...');
 
-  const url = 'https://web3.career/?page=1';
-  await page.goto(url);
-
-  let pageNumSrcElement = await page.$eval('#hh', el => el.innerHTML);
-  let srcArr = pageNumSrcElement.split(' ');
-  let numPages = Math.ceil(+srcArr[1].replace(',', '') / 35);
-
-  for (let i = 1; i <= 25; i++) {
-    const url = `https://web3.career/?page=${i}`;
-    console.log('Hitting URL...', `Page ${i}`);
+    const url = 'https://web3.career/?page=1';
     await page.goto(url);
-    const table_row = await page.$$eval('.table_row', el => {
-      console.log(el);
 
-      // grab job title
-      let jobs = el.map(time => time.children[0].innerText);
+    let grabTotalJobListings = await page.$eval('#hh', el => el.innerHTML);
+    let srcArr = grabTotalJobListings.split(' ');
+    let totalPages = Math.ceil(+srcArr[1].replace(',', ' ') / 35);
 
-      // grab company time
-      let companies = el.map(h3 => h3.children[1].children[0].innerText);
+    // #job > div > div > div.col-12.col-md-8.pe-0.pe-md-5 > div > div.text-dark-grey-text.p-2.p-md-0 > div:nth-child(3)
 
-      // grab job location
-      let location = el.map(a => a.children[3].children[0].innerText);
+    for (let i = 1; i <= 1; i++) { // repeat in batches
+        let url = `https://web3.career/?page=${i}`;
+        console.log('Hitting URL...', `Page ${i}`)
+        await page.goto(url);
 
-      // grab time stamps for job postings
-      let post_date = el.map(time => time.children[2].querySelector('span').innerText);
+        console.log('Scraping...');
+        // click on each job listing & grab job details
+        let details = [];
+        for (let i = 1; i <= 50; i += 3) {
+            await page.click(`body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${i})`);
+            let detail = await page.$$eval('#job > div > div', (el, i) => {
 
-      let job_URL = el.map(href => href.children[1].children[0].href);
+                // convert string to array
+                let desc = el[0].children[2].innerText.split(' ');
+                // console.log(desc);
 
-      let salary = el.map(elem => elem.children[4].children[0].innerText);
+                // find index of
+                // console.log(desc[200]);
+                // desc.slice(0, 200);
+                // console.log(desc.slice(0, 200).join(' '));
+                // let indexToSlice = desc.indexOf('RMjYwMTo2MDA6OTY4MTo1ZDIwOjljNDoyYmIxOmQ3NzE6NWIyNwM');
+                // console.log(indexToSlice);
+                return el[0].children[2].innerText;
+            });
 
-      return { jobs, companies, location, post_date, job_URL, salary };
-    });
+            // console.log(detail);
 
-    let jobCoPairs = table_row.jobs.map((job, i) => {
+            // attempted to find original job listing URL
+            // let original_Listing = page.$$eval('#job > div > div > header > div.mt-2 > div > div > div.text-start.my-1.d-md-flex.justify-content-start.gap-3.d-none > a.my-btn.my-btn-primary-maximum', (el, i) => {
 
-      let linkArr = table_row.job_URL[i].split('/');
-      let key = linkArr[linkArr.length - 1];
+            //     console.log(el);
+            //     // return el[0].children[2].innerText;
+            // })
+            details.push(detail);
+        }
 
-      return {
-        job: job,
-        company: table_row.companies[i],
-        location: table_row.location[i],
-        post_date: table_row.post_date[i],
-        job_URL: table_row.job_URL[i],
-        key,
-        salary: table_row.salary[i],
-      };
-    });
+        const table_row = await page.$$eval('.table_row', el => {
 
-    allJobs = [...allJobs, ...jobCoPairs];
-  }
+            // grab job title
+            let jobs = el.map(time => time.children[0].innerText);
 
-  console.log('All Jobs: ', allJobs);
+            // grab company time
+            let companies = el.map(h3 => h3.children[1].children[0].innerText);
 
-  // console.log(table_row);
-  //   const jobs = await page.$$eval('h2', e => {
-  //     console.log(e);
-  //     return e.map(el => el.innerHTML)
-  //   });
-  // first job posting fully displayed has the same element, so you must pop from the array to avoid this duplicate
-  //   jobs.pop();
-  // // confirm length of jobs array returned from page.$$eval
-  // let listLength = jobs.length;
-  // console.log('Jobs length: ', listLength);
-  // console.log('Jobs:', jobs);
-  // // get all company names on page (returns array of element inner text)
-  //   const companies = await page.$$eval('h3', e => e.map(el => el.innerHTML));
-  // // confirm length of companies array returned from page.$$eval
-  // let companyLength = companies.length;
-  // console.log('Companies length: ', companyLength);
-  // console.log('Companies:', companies);
-  // zip the jobs and companies together into an array of objects
+            // grab job location
+            let location = el.map(a => a.children[3].children[0].innerText)
 
-  // close browser instance
-  await browser.close();
+            // grab time stamps for job postings
+            let latest_post = el.map(time => time.children[2].querySelector('span').innerText);
+
+            // grab URL for each job posting
+            let job_URL = el.map(href => href.children[1].children[0].href);
+
+            return { jobs, companies, location, latest_post, job_URL }
+        });
+
+        const throwErr = (err) => {
+            if(err) throw err;
+            console.log('saved!');
+        }
+
+        // Get all job information and return array of objects
+        let jobCoPairs = table_row.jobs.map((job, i) => {
+            let linkArr = table_row.job_URL[i].split('/');
+            let key = linkArr[linkArr.length - 1];
+
+
+            const job_listing = {
+                job: job,
+                company: table_row.companies[i],
+                location: table_row.location[i],
+                post_date: table_row.latest_post[i],
+                link: table_row.job_URL[i],
+                key,
+                details: details[i],
+            };
+            fs.appendFile('wenjobs_test.json', JSON.stringify(job_listing), throwErr) //method appends specified content to a file. If the file does not exist, the file will be created
+            return job_listing;
+        });
+        // console.log('Job/Company Pairs: ', jobCoPairs);
+    }
+
 }
 
 getJobs();
-
