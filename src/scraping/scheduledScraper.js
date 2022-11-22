@@ -69,14 +69,14 @@ async function getNewJobs() {
     });
 
     details.push(detail);
-  }
+  };
 
   const throwErr = (err) => {
     if (err) throw err;
   };
 
   // zip all job data points together and create an array of objects
-  let jobCoPairs = table_row.jobs.map(async (job, i) => {
+  let jobCoPairs = table_row.jobs.map( (job, i) => {
     let linkArr = table_row.job_URL[i].split('/');
     let key = linkArr[linkArr.length - 1];
 
@@ -95,15 +95,16 @@ async function getNewJobs() {
     return job_listing;
   });
 
-  //method writes specified content to a file. If it exists it will be replace file. If the file does not exist, the file will be created.
-  fs.writeFile('new_page_1.json', JSON.stringify(all_Jobs), throwErr);
+  // method writes specified content to a file. If it exists it will be replace file. If the file does not exist, the file will be created.
+  fs.writeFileSync('new_page_1.json', JSON.stringify(all_Jobs), throwErr);
+  console.log('new jobs page updated!');
 
-  // console.log('Job/Company Pairs: ', jobCoPairs);
+  console.log('Job/Company Pairs: ', jobCoPairs[0]);
 
   // close browser instance
   await browser.close();
 }
 
-// getNewJobs();
+getNewJobs();
 
 module.exports = getNewJobs;

@@ -9,7 +9,7 @@ const page_8 = require('./page_8.json');
 const page_9 = require('./page_9.json');
 const page_10 = require('./page_10.json');
 
-let most_recent = 'hello';
+let most_recent = page_1.jobs[0].key;
 
 module.exports = [
   { most_recent },
