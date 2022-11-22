@@ -1,3 +1,3 @@
-const { start, app } = require('./src/server');
+const { start } = require('./src/server');
 
 start();
