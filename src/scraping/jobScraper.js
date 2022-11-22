@@ -91,6 +91,7 @@ async function getJobs() {
     let jobCoPairs = table_row.jobs.map((job, i) => {
       let linkArr = table_row.job_URL[i].split('/');
       let key = linkArr[linkArr.length - 1];
+      // console.log(key);
 
       const job_listing = {
         job: job,
@@ -107,9 +108,9 @@ async function getJobs() {
     });
 
     //method appends specified content to a file. If the file does not exist, the file will be created
-    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr);
+    fs.appendFile('wenjobs_31_40.json', JSON.stringify(all_Jobs), throwErr);
 
-    console.log('Job/Company Pairs: ', jobCoPairs);
+    // console.log('Job/Company Pairs: ', jobCoPairs);
   }
 
   // close browser instance
