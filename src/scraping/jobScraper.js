@@ -1,8 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-let redisClient;
-
 async function getJobs() {
   const all_Jobs = { jobs: [] };
   // Launch browser instance
@@ -28,7 +26,7 @@ async function getJobs() {
 
 
   // iterate over each page (swap "i <= 1" with "i <= numPages" for full scrape)
-  for (let i = 1; i <= 1; i++) {
+  for (let i = 1; i <= 10; i++) {
     const url = `https://web3.career/?page=${i}`;
     console.log('Hitting URL...', `Page ${i}`);
     await page.goto(url);
@@ -105,7 +103,7 @@ async function getJobs() {
     });
 
     //method appends specified content to a file. If the file does not exist, the file will be created
-    fs.appendFile('wenjobs_test.json', JSON.stringify(all_Jobs), throwErr);
+    fs.appendFile('wenjobs_1_10.json', JSON.stringify(all_Jobs), throwErr);
 
     // console.log('Job/Company Pairs: ', jobCoPairs);
   }
@@ -113,7 +111,5 @@ async function getJobs() {
   // close browser instance
   await browser.close();
 }
-
-await client.disconnect();
 
 getJobs();
