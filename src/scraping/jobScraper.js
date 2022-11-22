@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 async function getJobs() {
-  const all_Jobs = { jobs: [] };
+  const all_Jobs = {jobs: []};
   // Launch browser instance
   console.log('Opening browser...');
   const browser = await puppeteer.launch();
@@ -26,7 +26,7 @@ async function getJobs() {
 
 
   // iterate over each page (swap "i <= 1" with "i <= numPages" for full scrape)
-  for (let i = 21; i <= 30; i++) {
+  for (let i = 10; i <= 10; i++) {
     const url = `https://web3.career/?page=${i}`;
     console.log('Hitting URL...', `Page ${i}`);
     await page.goto(url);
@@ -103,7 +103,7 @@ async function getJobs() {
     });
 
     //method appends specified content to a file. If the file does not exist, the file will be created
-    fs.appendFile('wenjobs_21_30.json', JSON.stringify(all_Jobs), throwErr);
+    fs.appendFile('page_10.json', JSON.stringify(all_Jobs), throwErr);
 
     // console.log('Job/Company Pairs: ', jobCoPairs);
   }

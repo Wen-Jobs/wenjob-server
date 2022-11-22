@@ -11,11 +11,11 @@
 ## Deployed Server
 - Coming soon!
 
-## Run app locally 
-- npm i ...
+## Run app locally
+- npm i express cors dotenv puppeteer node-cron
 
 #### Vision
-------
+Web scraping tool to handle current Web3 job listings available for users. 
 
 What is the vision of this product?
 
