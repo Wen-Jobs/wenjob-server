@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+let redisClient;
+
 async function getJobs() {
   const all_Jobs = { jobs: [] };
   // Launch browser instance
@@ -72,11 +74,6 @@ async function getJobs() {
       await page.waitForTimeout(500);
 
       let detail = await page.$eval(detailSelector, (el, i) => {
-        // console.log('elem ___________--------------', i, el.innerText);
-
-        // console.log(el.innerText);
-
-
         return el.innerText;
       });
 
@@ -88,10 +85,9 @@ async function getJobs() {
     };
 
     // zip all job data points together and create an array of objects
-    let jobCoPairs = table_row.jobs.map((job, i) => {
+    let jobCoPairs = table_row.jobs.map( async (job, i) => {
       let linkArr = table_row.job_URL[i].split('/');
       let key = linkArr[linkArr.length - 1];
-      // console.log(key);
 
       const job_listing = {
         job: job,
@@ -103,12 +99,13 @@ async function getJobs() {
         details: details[i],
         tags: table_row.tags[i],
       };
+
       all_Jobs.jobs.push(job_listing);
       return job_listing;
     });
 
     //method appends specified content to a file. If the file does not exist, the file will be created
-    fs.appendFile('wenjobs_31_40.json', JSON.stringify(all_Jobs), throwErr);
+    fs.appendFile('wenjobs_test.json', JSON.stringify(all_Jobs), throwErr);
 
     // console.log('Job/Company Pairs: ', jobCoPairs);
   }
@@ -116,5 +113,7 @@ async function getJobs() {
   // close browser instance
   await browser.close();
 }
+
+await client.disconnect();
 
 getJobs();
