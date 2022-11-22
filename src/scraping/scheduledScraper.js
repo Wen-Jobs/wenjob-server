@@ -96,10 +96,10 @@ async function getNewJobs() {
   });
 
   // method writes specified content to a file. If it exists it will be replace file. If the file does not exist, the file will be created.
-  fs.writeFileSync('new_page_1.json', JSON.stringify(all_Jobs), throwErr);
+  fs.writeFile('new_page_1.json', JSON.stringify(all_Jobs), throwErr);
   console.log('new jobs page updated!');
 
-  console.log('Job/Company Pairs: ', jobCoPairs[0]);
+  console.log('Job/Company Pairs: ', jobCoPairs[0].company, jobCoPairs[0].key);
 
   // close browser instance
   await browser.close();

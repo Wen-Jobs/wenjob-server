@@ -5,8 +5,10 @@ require('dotenv').config();
 const cron = require('node-cron');
 
 const getNewJobs = require('./scraping/scheduledScraper');
-const new_jobs = require('./scraping/scraped_data/NEW_JOBS');
-const ALL_JOBS = require('./scraping/scraped_data/ALL_JOBS');
+let new_jobs = require('./scraping/scraped_data/NEW_JOBS');
+let ALL_JOBS = require('./scraping/scraped_data/ALL_JOBS');
+
+console.log('most recent', new_jobs[0].key);
 
 // schedule method is used to schedule a task, takes in a string and a callback
 // asterisk represent a unit of time seconds, minutes, hours (0-59), days (1-31), month (1-12), day of week (0-7)
@@ -16,24 +18,23 @@ cron.schedule('10 * * * *', () => {
   updateALLJOB();
 });
 
-function updateALLJOB(){
+const updateALLJOB = () => {
   let i = 0;
   const latest = ALL_JOBS[0].most_recent;
-  console.log(latest);
+  console.log(latest, new_jobs[i].key);
 
   while(new_jobs[i].key !== latest){
-    console.log('new jobs key', new_jobs[i].key, ALL_JOBS[i].key)
 
     if(i === 0){
-      console.log('new jobs added!', new_jobs[i].key);
-      ALL_JOBS[0] = {most_recent: new_jobs[i].key};
+      ALL_JOBS[0].most_recent = new_jobs[i].key;
     }
     ALL_JOBS.push(new_jobs[i]);
-    console.log('all_jobs updated with new jobs');
     i++;
   }
   console.log(ALL_JOBS[0].most_recent);
+  return ALL_JOBS;
 }
+
 
 const PORT = process.env.PORT || 3002;
 
@@ -47,12 +48,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getJobs', (req, res, next) => {
-  console.log(ALL_JOBS.length);
+  // console.log(ALL_JOBS.length);
+  // console.log(ALL_JOBS[0]);
   res.send(ALL_JOBS);
 });
 
 app.get('/updateJobs', (req, res, next) => {
-  updateALLJOB();
+  ALL_JOBS = updateALLJOB();
   res.send(ALL_JOBS);
 })
 
