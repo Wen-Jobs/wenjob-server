@@ -37,6 +37,10 @@ async function getJobs() {
       el.map(tag => {
         let elem_tag = tag.children[5].innerText;
         elem_tag = elem_tag.replace('non tech', 'non-tech');
+        elem_tag = elem_tag.replace('non tech', 'non-tech');
+        elem_tag = elem_tag.replace('non tech', 'non-tech');
+        elem_tag = elem_tag.replace('non tech', 'non-tech');
+        elem_tag = elem_tag.replace('non tech', 'non-tech');
         tags.push(elem_tag.split(' '));
       });
 
