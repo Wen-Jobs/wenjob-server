@@ -2,7 +2,7 @@
 
 module.exports = async (page, numPages) => {
 
-  let siloedJobData = {
+  let rawJobData = {
     titles: [],
     companies: [],
     locations: [],
@@ -48,14 +48,14 @@ module.exports = async (page, numPages) => {
       };
     });
 
-    // push all page data into the siloedJobData object to consolidate all data
-    siloedJobData.titles.push(...pageData.titles);
-    siloedJobData.companies.push(...pageData.companies);
-    siloedJobData.locations.push(...pageData.locations);
-    siloedJobData.timeStamps.push(...pageData.timeStamps);
-    siloedJobData.URLs.push(...pageData.URLs);
-    siloedJobData.salaries.push(...pageData.salaries);
-    siloedJobData.tags.push(...pageData.tags);
+    // push all page data into the rawJobData object to consolidate all data
+    rawJobData.titles.push(...pageData.titles);
+    rawJobData.companies.push(...pageData.companies);
+    rawJobData.locations.push(...pageData.locations);
+    rawJobData.timeStamps.push(...pageData.timeStamps);
+    rawJobData.URLs.push(...pageData.URLs);
+    rawJobData.salaries.push(...pageData.salaries);
+    rawJobData.tags.push(...pageData.tags);
 
     // initialize details array
     let details = [];
@@ -78,9 +78,9 @@ module.exports = async (page, numPages) => {
       details.push(detail);
     }
 
-    // add the details to the siloedJobData object
-    siloedJobData.details.push(...details);
+    // add the details to the rawJobData object
+    rawJobData.details.push(...details);
   }
   // return the raw data
-  return siloedJobData;
+  return rawJobData;
 };

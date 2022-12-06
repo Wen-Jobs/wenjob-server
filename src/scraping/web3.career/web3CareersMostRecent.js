@@ -3,7 +3,7 @@
 const { collection, query, getDocs, orderBy, limit } = require('firebase/firestore') ;
 
 // require in the database
-const db = require('../firebase/firebase');
+const db = require('../../firebase/firebase');
 
 const getWeb3CareersMostRecent = async () => {
 
