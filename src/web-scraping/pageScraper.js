@@ -1,32 +1,32 @@
 const scraperObject = {
-    url: 'https://web3.career/',
-    async scraper(browser) {
-      let page = await browser.newPage();
-      console.log(`Navigating to ${this.url}...`);
-      await page.goto(this.url);
+  url: 'https://web3.career/',
+  async scraper(browser) {
+    let page = await browser.newPage();
+    console.log(`Navigating to ${this.url}...`);
+    await page.goto(this.url);
 
-      // grab listings from home page
-      await page.waitForSelector('.table'); // wait for selector method waits for the elem that contains all job title mobile related information
+    // grab listings from home page
+    await page.waitForSelector('.table'); // wait for selector method waits for the elem that contains all job title mobile related information
 
-      let job_listings = await page.$$eval('.table_row', listing => {
+    let job_listings = await page.$$eval('.table_row', listing => {
 
-        // grab each parent div wrapping the table rows
-        let title_div = listing.map(el => el.querySelector('.job-title-mobile'));
-        let titles = title_div.map(job => job.innerText);
+      // grab each parent div wrapping the table rows
+      let title_div = listing.map(el => el.querySelector('.job-title-mobile'));
+      let titles = title_div.map(job => job.innerText);
 
-        let company_div = listing.map(el => el.querySelector('.job-location-mobile'));
-        let companies = company_div.map(company => company.innerText);
+      let company_div = listing.map(el => el.querySelector('.job-location-mobile'));
+      let companies = company_div.map(company => company.innerText);
 
-        console.log(title_div);
-        // console.log(titles);
-        // console.log(companies);
+      console.log(title_div);
+      // console.log(titles);
+      // console.log(companies);
 
-        // title_div.map(el => )
+      // title_div.map(el => )
 
-        // find the nested href within each div
-        let job_postings = title_div.map(el => el.querySelector('a').href);
-        return job_postings;
-      });
+      // find the nested href within each div
+      let job_postings = title_div.map(el => el.querySelector('a').href);
+      return job_postings;
+    });
 
 
     //   // Grab Listings and scrape data from each listing page
@@ -58,7 +58,7 @@ const scraperObject = {
     //     return pagePromise(job);
     //   });
     //   console.log(results);
-    }
-  }
+  },
+};
 
-  module.exports = scraperObject;
+module.exports = scraperObject;

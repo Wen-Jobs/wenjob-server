@@ -1,12 +1,13 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+
+
 async function getNewJobs() {
   const all_Jobs = { jobs: [] };
   // Launch browser instance
   console.log('Opening browser...');
   const browser = await puppeteer.launch();
-
   // Open new page or "tab" in browser
   console.log('Opening new page...');
   const page = await browser.newPage();
@@ -14,7 +15,6 @@ async function getNewJobs() {
   console.log('Hitting URL...');
   // Get all job titles on page (returns array of element inner text)
   console.log('Scraping...');
-
 
   const url = 'https://web3.career/?page=1';
   await page.goto(url);
@@ -69,7 +69,7 @@ async function getNewJobs() {
     });
 
     details.push(detail);
-  };
+  }
 
   const throwErr = (err) => {
     if (err) throw err;

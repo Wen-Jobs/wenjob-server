@@ -33,7 +33,7 @@ const updateALLJOB = () => {
   }
   console.log(ALL_JOBS[0].most_recent);
   return ALL_JOBS;
-}
+};
 
 
 const PORT = process.env.PORT || 3002;
@@ -56,10 +56,10 @@ app.get('/getJobs', (req, res, next) => {
 app.get('/updateJobs', (req, res, next) => {
   ALL_JOBS = updateALLJOB();
   res.send(ALL_JOBS);
-})
+});
 
 function start() {
   app.listen(PORT, () => { console.log(`listing on port ${PORT}`); });
-};
+}
 
 module.exports = { start, app };
