@@ -36,6 +36,6 @@ let bigScraper = async (numPages) => {
 };
 
 // pass in the number of pages to scrape
-bigScraper(1);
+bigScraper(29);
 
 module.exports = bigScraper;
