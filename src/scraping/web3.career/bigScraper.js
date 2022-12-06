@@ -22,17 +22,11 @@ let bigScraper = async (numPages) => {
   // zip the raw data into an array of objects
   let jobsData = zipWeb3Careers(rawJobData);
 
-
   // add the new jobs to the database
-  // jobsData.forEach(job => {
-  //   addToDatabase(job);
-  // });
-
-  console.log('Logging Data...');
-  // jobsData.forEach(job => {
-  //   console.log(job);
-  // });
-  console.log(jobsData.length);
+  console.log('Adding Jobs to Database...');
+  jobsData.forEach(job => {
+    addToDatabase(job);
+  });
 
   console.log('Closing Browser...');
   await browser.close();
@@ -42,5 +36,6 @@ let bigScraper = async (numPages) => {
 };
 
 // pass in the number of pages to scrape
-// bigScraper(1);
+bigScraper(1);
+
 module.exports = bigScraper;

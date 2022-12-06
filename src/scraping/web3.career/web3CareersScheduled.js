@@ -34,4 +34,6 @@ const web3CareersScheduled = async () => {
   console.log('------------------------------------');
 };
 
+web3CareersScheduled();
+
 module.exports = web3CareersScheduled;
