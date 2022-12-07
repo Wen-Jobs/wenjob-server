@@ -23,7 +23,6 @@ module.exports = (rawJobData) => {
       company: rawJobData.companies[i],
       location: rawJobData.locations[i],
       posted,
-      // timeStamp: rawJobData.timeStamps[i],
       URL: rawJobData.URLs[i],
       salary: rawJobData.salaries[i],
       tags: rawJobData.tags[i],
