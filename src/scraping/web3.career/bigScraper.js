@@ -24,8 +24,12 @@ let bigScraper = async (numPages) => {
 
   // add the new jobs to the database
   console.log('Adding Jobs to Database...');
+  // jobsData.forEach(job => {
+  //   addToDatabase(job);
+  // });
+
   jobsData.forEach(job => {
-    addToDatabase(job);
+    console.log(job);
   });
 
   console.log('Closing Browser...');
@@ -36,6 +40,6 @@ let bigScraper = async (numPages) => {
 };
 
 // pass in the number of pages to scrape
-bigScraper(29);
+bigScraper(1);
 
 module.exports = bigScraper;

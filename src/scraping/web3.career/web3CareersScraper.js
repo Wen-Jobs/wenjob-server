@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = async (page, numPages) => {
+const Web3CareersScraper = async (page, numPages) => {
 
   let rawJobData = {
     titles: [],
@@ -28,7 +28,7 @@ module.exports = async (page, numPages) => {
       // grab all locations
       let locations = jobBlocks.map(block => block.children[3].innerText);
       // grab all time stamps
-      let timeStamps = jobBlocks.map(block => block.children[2].innerText);
+      let timeStamps = jobBlocks.map(block => block.children[2].children[0].dateTime);
       // grab all URLs
       let URLs = jobBlocks.map(block => block.children[1].children[0].href);
       // grab all salaries
@@ -84,3 +84,5 @@ module.exports = async (page, numPages) => {
   // return the raw data
   return rawJobData;
 };
+
+module.exports = Web3CareersScraper;
