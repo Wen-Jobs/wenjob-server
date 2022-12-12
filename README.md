@@ -1,6 +1,7 @@
-# Wen Jobs Server
+# WenJobs Server
 
 ## Authors
+
 - Robert Ball
 - Alan Chelko
 - Xavier Hillman
@@ -8,48 +9,62 @@
 - Stephen Martinez
 - Jack Stubblefield
 
-## Deployed Server
-  - https://wen-jobs-server-deploy-prod.onrender.com
+### What is WenJobs?
 
-## Run app locally
-- npm i express cors dotenv puppeteer node-cron
+A job board that utilizes scheduled web-scraping to collect current Web3 job postings. The data is then stored in a database and served to the front-end of the application. The front-end is built with React and is hosted on Firebase.
 
-#### Vision
-Web scraping tool to handle current Web3 job listings available for users.
+### Why did we build WenJobs?
 
-What is the vision of this product?
+- To create a more effective, efficient and natural path for job seekers to identify and obtain their next role.
 
--   To create a more effective, efficient and natural path for job seekers to identify and obtain their next role.
+- Job boards are great at percolating a vast array of jobs in one place, but are disconnected from your network and from each other. LinkedIn is a great resource for networking, but you have to have a specific job or company in mind in order to see who might be in your network. Lastly, researching companies and identifying a decent volume of meaningful opportunities in your particular area of interest is just unsolved currently.
 
-What pain point does this project solve?
-
--   Job boards are great at percolating a vast array of jobs in one place, but are disconnected from your network and from each other. LinkedIn is a great resource for networking, but you have to have a specific job or company in mind in order to see who might be in your network. Lastly, researching companies and identifying a decent volume of meaningful opportunities in your particular area of interest is just unsolved currently.
-
-Why should we care about your product?
-
--   One of the hardest parts of the job hunt is networking---finding those people who can actually help you get your application seen and your voice heard. Often these quick conversations can lead to a job much more efficiently and effectively than any other job-seeking technique.
+- One of the hardest parts of the job hunt is networking---finding those people who can actually help you get your application seen and your voice heard. Often these quick conversations can lead to a job much more efficiently and effectively than any other job-seeking technique.
 
 ## Technologies Used
-  - Puppeteer: In order to find job data, webscraping was required to target Web3 job boards and scrape job listings from available resources. This library is a Node library that was used to scrape data from job boards
 
-  - File system (fs): A built in Node library to interact with the file system which is being used to write scraped data into JSON files to be used
+- Puppeteer: In order to find job data, web-scraping was required to target Web3 job boards and scrape job listings from available resources. This library allowed us to automate the process of navigating to the job board, searching for jobs, and collecting the data.
 
-  - Node-cron: A job scheduler for Node that helped build the functionality behind scheduled data scraping to provide users with the latest data
+- Node-cron: A programmatic scheduler library used to build the scheduling functionality for data scraping to provide users with the latest data.
 
-  - Express: A basic express server was built in order to facilitate HTTP requests that sends job listing data to the front-end of the application
+- Express: A basic express server was built in order to facilitate continuous data scraping and to add the job data to a database.
 
-## API
-    - Endpoints:
-      - /updateJobs - returns response array with most recent job listings within last 12h
-      - /getJobs - returns array of job listings
+- Firebase: A database we used to hold the job data.
 
+- Dayjs: A library used to format the date and time of the job listings.
 
-Domain Modeling
----------------
+## Run app locally
 
-![UML version 1.0.0](./assets/UML-wen.png)
+- Clone the repo
+- Create a .env file in the root directory
+- Create a firebase project and add a web app
+  - You will be given a firebaseConfig object
+- Add the following to the .env file:
 
-## Proposed Database Schema - for future development
-![SQL Database organization](./assets/sql-propsal.png)
+```javascript
+FIREBASE_API_KEY=<YOUR FIREBASE apiKey>
+FIREBASE_AUTH_DOMAIN=<YOUR FIREBASE authDomain>
+FIREBASE_PROJECT_ID=<YOUR FIREBASE projectId>
+FIREBASE_STORAGE_BUCKET=<YOUR FIREBASE storageBucket>
+FIREBASE_MESSAGING_SENDER_ID=<YOUR FIREBASE messagingSenderId>
+FIREBASE_APP_ID=<YOUR FIREBASE appId>
+FIREBASE_MEASUREMENT_ID=<YOUR FIREBASE measurementId>
+PORT=<YOUR PORT>
+```
 
+- Install dependencies
+  > npm i
+  - This will install the following:
+    - express
+    - cors
+    - dotenv
+    - puppeteer
+    - node-cron
+    - dayjs
+    - firebase
 
+- To populate your database with approximately 1000 latest job listings (about 1 month of data), run the bigScraper.js file
+  > node bigScraper.js
+- To start the server, run:
+  > node index.js
+  - This will start the server and begin the scheduled scraping of job data (once every 12 hours).
