@@ -1,3 +1,5 @@
-const { start, app } = require('./src/server');
+'use strict';
+
+const { start } = require('./src/server');
 
 start();
