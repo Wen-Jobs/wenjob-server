@@ -20,18 +20,23 @@ const web3CareersScheduled = async () => {
   // scrape the first page of web3.careers
   let firstPageRawData = await web3CareersScraper(page, 1);
   // zip the raw data into an array of objects
-  let jobsData = zipWeb3Careers(firstPageRawData);
+  let jobsData = await zipWeb3Careers(firstPageRawData);
   // add the new jobs to the database
   let i = 0;
-  while (jobsData[i].key !== mostRecent) {
-    addToDatabase(jobsData[i]);
-    i++;
+  while (i < jobsData.length && jobsData[i].key !== mostRecent) {
+    try {
+      addToDatabase(jobsData[i]);
+      i++;
+    } catch (error) {
+      console.log('Error:', error);
+    }
   }
   // close the browser
   console.log('Closing Browser...');
   await browser.close();
   console.log('Browser Closed.');
   console.log('------------------------------------');
+  process.exit();
 };
 
 web3CareersScheduled();
