@@ -13,7 +13,7 @@ const web3CareersScheduled = require('./scraping/web3.career/web3CareersSchedule
 // asterisk represent a unit of time seconds (0-59 optional), minutes(0-59), hours (0-23), days (1-31), month (1-12), day of week (0-7)
 
 // scrapes data every 12 hours
-const dailyScraper = cron.schedule(' * */12 * * *', () => {
+const dailyScraper = cron.schedule('0 */12 * * *', () => {
   web3CareersScheduled();
 });
 
