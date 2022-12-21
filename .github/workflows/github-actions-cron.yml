@@ -1,7 +1,7 @@
 name: Scrape web3.career every 12 hours
 on:
   schedule:
-    - cron: "6 */7 * * *"
+    - cron: "9 19 * * *"
 
 jobs:
   scrape:
