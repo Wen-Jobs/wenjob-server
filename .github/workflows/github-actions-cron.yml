@@ -1,0 +1,15 @@
+name: Scrape web3.career every 12 hours
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm i
+      - run: node src/scraping/web3.career/web3CareersScheduled.js

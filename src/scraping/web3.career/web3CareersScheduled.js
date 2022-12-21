@@ -36,15 +36,6 @@ const web3CareersScheduled = async () => {
       console.log('Error:', error);
     }
   }
-  // while (i < jobsData.length && jobsData[i].key !== mostRecent) {
-  //   try {
-  //     console.log('i: ', i);
-  //     addToDatabase(jobsData[i]);
-  //     i++;
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // }
   // close the browser
   console.log('Closing Browser...');
   await browser.close();
