@@ -6,7 +6,6 @@ const { collection, query, getDocs, where } = require('firebase/firestore') ;
 const db = require('../../firebase/firebase');
 
 const getWeb3CareersMostRecent = async () => {
-
   // reference for jobs from web3.career in the database
   const jobRef = query(collection(db, 'jobs'), where('source', '==', 'web3.career'));
   // get all web3.career jobs from the database
