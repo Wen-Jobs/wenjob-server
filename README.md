@@ -25,11 +25,9 @@ A job board that utilizes scheduled web-scraping to collect current Web3 job pos
 
 - Puppeteer: In order to find job data, web-scraping was required to target Web3 job boards and scrape job listings from available resources. This library allowed us to automate the process of navigating to the job board, searching for jobs, and collecting the data.
 
-- Node-cron: A programmatic scheduler library used to build the scheduling functionality for data scraping to provide users with the latest data.
+- GitHub Actions: Allows us to automate the process of running our web-scraping script on a schedule. This allowed us to run the script every 12 hours to collect the latest job data.
 
-- Express: A basic express server was built in order to facilitate continuous data scraping and to add the job data to a database.
-
-- Firebase: A database we used to hold the job data.
+- Firebase: The database we used to hold the job data.
 
 - Dayjs: A library used to format the date and time of the job listings.
 

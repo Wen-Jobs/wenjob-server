@@ -2,6 +2,7 @@
 
 const Web3CareersScraper = async (page, numPages) => {
 
+  // declare rawData object
   let rawJobData = {
     titles: [],
     companies: [],
@@ -61,11 +62,9 @@ const Web3CareersScraper = async (page, numPages) => {
     let details = [];
     // selector for the job description
     let detailSelector = '#job > div > div > div.text-dark-grey-text.px-3.pt-2';
-
     // click on each job posting and grab the description
     for (let j = 1; j <= 103; j += 3) {
       const jobBlockSelector = `body > main > div > div > div > div.row.row-cols-2 > div:nth-child(1) > table > tbody > tr:nth-child(${j})`;
-
       // click on the job block
       await page.$eval(jobBlockSelector, elem => elem.click());
       // wait for the page to load
@@ -77,7 +76,6 @@ const Web3CareersScraper = async (page, numPages) => {
       // push the description to the details array
       details.push(detail);
     }
-
     // add the details to the rawJobData object
     rawJobData.details.push(...details);
   }
