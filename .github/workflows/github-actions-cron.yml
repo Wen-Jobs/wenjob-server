@@ -1,4 +1,4 @@
-name: Scrape web3.career every 12 hours
+name: Scrape web3.career
 on:
   schedule:
     - cron: "5 */7 * * *"
