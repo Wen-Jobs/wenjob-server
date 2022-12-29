@@ -25,7 +25,7 @@ A job board that utilizes scheduled web-scraping to collect current Web3 job pos
 
 - Puppeteer: In order to find job data, web-scraping was required to target Web3 job boards and scrape job listings from available resources. This library allowed us to automate the process of navigating to the job board, searching for jobs, and collecting the data.
 
-- GitHub Actions: Allows us to automate the process of running our web-scraping script on a schedule. This allowed us to run the script every 12 hours to collect the latest job data.
+- GitHub Actions: Allows us to automate the process of running our web-scraping script on a schedule. This allowed us to run the script every 7 hours to collect the latest job data.
 
 - Firebase: The database we used to hold the job data.
 
@@ -53,7 +53,6 @@ PORT=<YOUR PORT>
 - Install dependencies
   > npm i
   - This will install the following:
-    - express
     - cors
     - dotenv
     - puppeteer
@@ -63,6 +62,5 @@ PORT=<YOUR PORT>
 
 - To populate your database with approximately 1000 latest job listings (about 1 month of data), run the bigScraper.js file
   > node bigScraper.js
-- To start the server, run:
-  > node index.js
-  - This will start the server and begin the scheduled scraping of job data (once every 12 hours).
+- To manually scrape the first page for the latest job listings, run the web3CareersScheduled.js file
+  > node web3CareersScheduled.js
